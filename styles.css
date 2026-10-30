@@ -5,8 +5,10 @@
 body {
     min-height: 100vh;
     margin: 0;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
     font-family: system-ui, sans-serif;
     background: #f3f4f6;
     color: #172033;

@@ -130,6 +130,7 @@ const displayController = (() => {
                 nameInput.reportValidity();
                 return;
             }
+
             nameInput.setCustomValidity("");
             players[marker].changeName(name);
             render();

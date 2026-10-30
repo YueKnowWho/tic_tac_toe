@@ -19,11 +19,11 @@
         </header>
 
         <section class="game-area">
-            <form class="player-form" data-player="X">
+            <form class="player-form" data-player="X" novalidate>
                 <h2>Player X</h2>
                 <label for="player-x-name">Name</label>
                 <input id="player-x-name" name="name" type="text"
-                    placeholder="Player 1" maxlength="20" required>
+                    placeholder="Player 1" maxlength="20">
                 <button type="submit">SAVE NAME</button>
             </form>
 
@@ -39,11 +39,11 @@
                 <button class="cell" type="button" aria-label="Bottom right"></button>
             </section>
 
-            <form class="player-form" data-player="O">
+            <form class="player-form" data-player="O" novalidate>
                 <h2>Player O</h2>
                 <label for="player-o-name">Name</label>
                 <input id="player-o-name" name="name" type="text"
-                    placeholder="Player 2" maxlength="20" required>
+                    placeholder="Player 2" maxlength="20">
                 <button type="submit">SAVE NAME</button>
             </form>
         </section>

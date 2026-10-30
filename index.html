@@ -8,8 +8,50 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <main>
+    <main class="game-container">
         
+        <header class="game-header">
+            <h1>TIC TAC TOE</h1>
+            <p class="turn-status">
+                TURN: <output class="player-turn"></output>
+            </p>
+            <p class="game-message" aria-live="polite"></p>
+        </header>
+
+        <section class="game-area">
+            <form class="player-form" data-player="X">
+                <h2>Player X</h2>
+                <label for="player-x-name">Name</label>
+                <input id="player-x-name" name="name" type="text"
+                    placeholder="Player 1" maxlength="20" required>
+                <button type="submit">SAVE NAME</button>
+            </form>
+
+            <section class="board" aria-label="Tic tac toe board">
+                <button class="cell" type="button" aria-label="Top left"></button>
+                <button class="cell" type="button" aria-label="Top center"></button>
+                <button class="cell" type="button" aria-label="Top right"></button>
+                <button class="cell" type="button" aria-label="Middle left"></button>
+                <button class="cell" type="button" aria-label="Center"></button>
+                <button class="cell" type="button" aria-label="Middle right"></button>
+                <button class="cell" type="button" aria-label="Bottom left"></button>
+                <button class="cell" type="button" aria-label="Bottom center"></button>
+                <button class="cell" type="button" aria-label="Bottom right"></button>
+            </section>
+
+            <form class="player-form" data-player="O">
+                <h2>Player O</h2>
+                <label for="player-o-name">Name</label>
+                <input id="player-o-name" name="name" type="text"
+                    placeholder="Player 2" maxlength="20" required>
+                <button type="submit">SAVE NAME</button>
+            </form>
+        </section>
+
+        <footer class="game-controls">
+            <button class="reset-btn" type="button">RESET GAME</button>
+        </footer>
+
     </main>
 </body>
 </html>

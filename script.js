@@ -28,7 +28,10 @@ const gameLogic = (()=>{
     const player2 = createPlayer("Player 2", "O");
     
     let activePlayer = player1;
+    let gameOver = false;
     const getActivePlayer = ()=>{return activePlayer};
+    const isGameOver = () => gameOver;
+    const getPlayers = () => ({ X: player1, O: player2 });
     const switchTurn = () =>{
         activePlayer = activePlayer === player1 ? player2 : player1;
     }
@@ -48,26 +51,28 @@ const gameLogic = (()=>{
         return false;
     }
     const playTurn = (index) => {
+        if (gameOver) {
+            return "finished";
+        }
         if(gameBoard.placePiece(activePlayer.marker, index)){
             const board = gameBoard.getBoard();
             if (isWon(activePlayer)) {
-                console.log(`${activePlayer.getName()} wins!`);
+                gameOver = true;
                 return "win";
-            } else if(board.every(marker => marker !== " ")) {
-                console.log("Tie!")
+            } else if(board.every(marker => marker !== " ")){
+                gameOver = true;
                 return "tie";
             } else {
-                console.log("Switching turns, active player will change")
                 switchTurn();
                 return "continue";
             }
         }
-        console.log("Spot already taken, active plaayer will remain the same")
         return "invalid";
     }
     const resetGame = () =>{
         gameBoard.reset();
         activePlayer = player1;
+        gameOver = false;
     }
     const printBoard = () => {
         board = gameBoard.getBoard();
@@ -81,61 +86,63 @@ const gameLogic = (()=>{
     }
     // Test making a move
 
-    return { playTurn, getActivePlayer, resetGame, getBoard: gameBoard.getBoard, printBoard};
+    return { playTurn, getActivePlayer, isGameOver, getPlayers, resetGame, getBoard: gameBoard.getBoard, printBoard};
 })();
 
-// const displayController (() => {
-//     //renderboard
+const displayController = (() => {
+    const cells = document.querySelectorAll(".cell");
+    const messageDiv = document.querySelector(".game-message");
+    const turnOutput = document.querySelector(".player-turn");
+    const resetButton = document.querySelector(".reset-btn");
+    const playerForms = document.querySelectorAll(".player-form");
+    const players = gameLogic.getPlayers();
 
-//     //event listeners for board spots
+    const render = () => {
+        const board = gameLogic.getBoard();
+        cells.forEach((cell, index) => {
+            const marker = board[index];
+            cell.textContent = marker === " " ? "" : marker;
+            cell.disabled = marker !== " " || gameLogic.isGameOver();
+        });
+        turnOutput.textContent = gameLogic.getActivePlayer().getName();
+    };
 
-//     //event listener for restart game
+    cells.forEach((cell, index) => {
+        cell.addEventListener("click", () => {
+            const result = gameLogic.playTurn(index);
+            render();
+            if (result === "win") {
+                messageDiv.textContent = `${gameLogic.getActivePlayer().getName()} wins!`;
+            } else if (result === "tie") {
+                messageDiv.textContent = "It's a tie!";
+            }
+        });
+    });
 
-//     //event listener
-// })();
+    playerForms.forEach((form) => {
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const marker = form.dataset.player;
+            const nameInput = form.elements.namedItem("name");
+            const name = nameInput.value.trim();
+            if (!name) {
+                nameInput.setCustomValidity("Enter a name.");
+                nameInput.reportValidity();
+                return;
+            }
+            nameInput.setCustomValidity("");
+            players[marker].changeName(name);
+            render();
+        });
+    });
 
-  gameLogic.resetGame();
-gameLogic.playTurn(0); // X plays top-left
-gameLogic.printBoard();
-gameLogic.playTurn(3); // O plays middle-left
-gameLogic.playTurn(1); // X plays top-middle
-gameLogic.printBoard();
-gameLogic.playTurn(4); // O plays center
-gameLogic.playTurn(2); // X plays top-right -> Returns "win"
-gameLogic.printBoard();
+    resetButton.addEventListener("click", () => {
+        gameLogic.resetGame();
+        messageDiv.textContent = "";
+        render();
+    });
 
-gameLogic.resetGame();
-gameLogic.playTurn(1); // X plays top-middle
-gameLogic.playTurn(0); // O plays top-left
-gameLogic.printBoard();
-gameLogic.playTurn(2); // X plays top-right
-gameLogic.playTurn(4); // O plays center
-gameLogic.playTurn(3); // X plays middle-left
-gameLogic.playTurn(8); // O plays bottom-right -> Returns "win"
-gameLogic.printBoard();
+    render();
 
-gameLogic.resetGame();
-gameLogic.playTurn(0); // X
-gameLogic.playTurn(4); // O
-gameLogic.playTurn(1); // X
-gameLogic.playTurn(2); // O
-gameLogic.playTurn(5); // X
-gameLogic.playTurn(3); // O
-gameLogic.playTurn(6); // X
-gameLogic.playTurn(8); // O
-gameLogic.playTurn(7); // X -> Returns "tie"
-gameLogic.printBoard();
-
-gameLogic.resetGame();
-gameLogic.playTurn(0); // X plays top-left
-gameLogic.printBoard();
-
-// INVALID MOVE TEST: O tries to play in the exact same spot (0)
-gameLogic.playTurn(0); // Should return "invalid" (or not allow it)
-gameLogic.getActivePlayer(); // Should STILL be Player O's turn (turn didn't advance)
-
-// Correct move for O:
-gameLogic.playTurn(4); // O plays center successfully
-gameLogic.printBoard();
-
-
+    return { render };
+})();
